@@ -6,8 +6,11 @@ param(
     [Parameter(Mandatory=$true, Position=1)]
     [string]$reportName,
 
-    [Parameter(Mandatory=$false, Position=2)]
-    [string]$appType = "windowsstoreapp"
+    [Parameter(Mandatory=$false)]
+    [string]$appType = "windowsstoreapp",
+
+    [Parameter(Mandatory=$false)]
+    [int[]]$testIds
 )
 
 # Ensure the error action preference is set to the default for PowerShell3, 'Stop'
@@ -28,4 +31,14 @@ Write-Output "App certification is started..."
 Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
-& $appcertpath test -appxpackagepath "$packagePath" -reportoutputpath $reportoutpath -apptype "$appType"
+$arguments = @{
+    appxpackagepath = "$packagePath"
+    reportoutputpath = "$reportoutpath"
+    apptype = "$appType"
+}
+
+if ($testIds.Count -gt 0) {
+    $arguments['testid'] = "[$($testIds -join ',')]"
+}
+
+& $appcertpath test @arguments
