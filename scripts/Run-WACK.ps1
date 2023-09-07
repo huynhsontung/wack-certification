@@ -32,9 +32,11 @@ Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
 
-$arguments = "-appxpackagepath $packagePath -reportoutputpath $reportoutpath -apptype $appType"
+$arguments = "-appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
 if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
 
-Invoke-Expression "$appcertpath test $arguments"
+$testcommand = "`"$appcertpath`" test $arguments"
+Write-Verbose "testcommand = $testcommand"
+Invoke-Expression $testcommand
