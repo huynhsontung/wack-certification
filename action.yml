@@ -16,6 +16,13 @@ inputs:
   threat-as-warning-rules:
     description: "List of WACK rules to threat as warning if failed separated by a comma (optional)"
     required: false
+  app-type:
+    description: "Specifies the application type."
+    required: false
+    default: "windowsstoreapp"
+  rules:
+    description: "List of WACK rules to run explicitly separated by a comma (optional)"
+    required: false
 
 outputs:
   report-path:
@@ -61,6 +68,8 @@ runs:
         ${{ github.action_path }}\scripts\Run-WACK.ps1
         "${{ inputs.package-path }}"
         "${{ inputs.report-name }}"
+        -appType "${{ inputs.app-type }}"
+        -testIds ${{ inputs.rules || '@()' }}
 
     - name: Analyze the Windows App Certificat Kit results
       id: analysis
