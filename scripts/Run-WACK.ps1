@@ -37,6 +37,6 @@ if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
 
-$testcommand = "`"$appcertpath`" test $arguments"
+$testcommand = ".`"$appcertpath`" test $arguments"
 Write-Verbose "testcommand = $testcommand"
 Invoke-Expression $testcommand
