@@ -31,14 +31,10 @@ Write-Output "App certification is started..."
 Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
-$arguments = @{
-    appxpackagepath = "$packagePath"
-    reportoutputpath = "$reportoutpath"
-    apptype = "$appType"
-}
 
+$arguments = "-appxpackagepath $packagePath -reportoutputpath $reportoutpath -apptype $appType"
 if ($testIds.Count -gt 0) {
-    $arguments['testid'] = "[$($testIds -join ',')]"
+    $arguments += " -testid [$($testIds -join ',')]"
 }
 
-& $appcertpath test @arguments
+& $appcertpath test $arguments
