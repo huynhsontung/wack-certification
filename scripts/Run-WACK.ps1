@@ -37,4 +37,4 @@ if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
 
-& $appcertpath test $arguments
+Invoke-Expression "$appcertpath test $arguments"
