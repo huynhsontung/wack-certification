@@ -70,6 +70,7 @@ runs:
         "${{ inputs.report-name }}"
         -appType "${{ inputs.app-type }}"
         -testIds ${{ inputs.rules || '@()' }}
+        -Verbose
 
     - name: Analyze the Windows App Certificat Kit results
       id: analysis
