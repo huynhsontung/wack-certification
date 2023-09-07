@@ -32,7 +32,7 @@ Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
 
-$arguments = "-resetTesting -appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
+$arguments = "-appusage peruser -appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
 if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
