@@ -98,7 +98,7 @@ runs:
           console.log(`Check run URL: ${resp.data.url}`)
           console.log(`Check run HTML: ${resp.data.html_url}`)
     
-    - if: failure()
+    - if: steps.analysis.outcome == 'failure'
       shell: powershell
       run: exit 1
 

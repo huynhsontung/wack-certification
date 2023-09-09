@@ -108,7 +108,7 @@ if($results) {
     Write-Output "summaryPath=$summaryPath" >> $env:GITHUB_OUTPUT
     
     if ($countFailed -gt 0) {
-        Write-Host "Certification has failed!"
+        Write-Error "Certification has failed!"
         exit 1
     } else {
         Write-Host "Certification has succeed!"
