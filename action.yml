@@ -33,7 +33,7 @@ runs:
   using: "composite"
   steps:
     - name: Ensure Windows runner type
-      shell: pwsh
+      shell: powershell
       run: >
         if (-not $IsWindows) {
             Write-Host "ERROR: this action is only compatible with Windows!"
@@ -63,7 +63,7 @@ runs:
 
     - name: Run the Windows App Certification Kit
       id: certification
-      shell: pwsh
+      shell: powershell
       run: >
         ${{ github.action_path }}\scripts\Run-WACK.ps1
         "${{ inputs.package-path }}"
@@ -72,9 +72,9 @@ runs:
         -testIds ${{ inputs.rules || '@()' }}
         -Verbose
 
-    - name: Analyze the Windows App Certificat Kit results
+    - name: Analyze the Windows App Certification Kit results
       id: analysis
-      shell: pwsh
+      shell: powershell
       run: >
         ${{ github.action_path }}\scripts\Analyze-Results.ps1
         "${{ steps.certification.outputs.reportPath }}"
