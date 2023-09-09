@@ -32,7 +32,8 @@ Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
 
-$arguments = "-appusage peruser -appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
+# $arguments = "-appusage peruser -appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
+$arguments = "-appusage peruser -packagefullname `"Screenbox_1.0.0.0_x64__rm8wvch11q4my`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
 if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
