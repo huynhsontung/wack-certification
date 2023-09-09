@@ -98,6 +98,10 @@ runs:
           console.log(`Check run create response: ${resp.status}`)
           console.log(`Check run URL: ${resp.data.url}`)
           console.log(`Check run HTML: ${resp.data.html_url}`)
+    
+    - if: steps.analysis.outcome == "failure"
+      shell: powershell
+      run: exit 1
 
 branding:
   icon: check-circle
