@@ -69,6 +69,7 @@ runs:
 
     - name: Analyze the Windows App Certification Kit results
       id: analysis
+      continue-on-error: true
       shell: powershell
       run: >
         ${{ github.action_path }}\scripts\Analyze-Results.ps1

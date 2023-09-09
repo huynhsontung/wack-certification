@@ -86,15 +86,7 @@ if($results) {
     Write-Host ("{0} WACK tests ignored" -f $countIgnored)
     Write-Host ("{0} WACK tests in unknow state" -f $countUnknow)
     Write-Host ("{0} WACK tests failed" -f $countFailed)
-
-    if ($countFailed -gt 0) {
-        Write-Output "conclusion=failure" >> $env:GITHUB_OUTPUT
-        Write-Error "Certification has failed!"
-    } else {
-        Write-Output "conclusion=success" >> $env:GITHUB_OUTPUT    
-        Write-Host "Certification has succeed!"
-    }
-
+ 
     $preSummary = ""
     $preSummary += "`n## Summary"
     $preSummary += "`n__Overall Result:__ " + $(if ($countFailed -gt 0) { ":x:" } else { ":white_check_mark:" })
@@ -105,19 +97,24 @@ if($results) {
     $preSummary += "`n__Application Name:__ $r_app_name"
     $preSummary += "`n__Application Version:__ $r_app_version"
     $preSummary += "`n__Generation Time:__ $r_report_time"
-
+    
     $summary = $preSummary + $summary
-
+    
     $summaryPath = (Split-Path -parent $reportPath) + "\summary.md"
     $summary | Out-File $summaryPath -Encoding utf8
-
+    
     Write-Output "name=$name" >> $env:GITHUB_OUTPUT
     Write-Output "title=$title" >> $env:GITHUB_OUTPUT
     Write-Output "summaryPath=$summaryPath" >> $env:GITHUB_OUTPUT
     
-} else {
+    if ($countFailed -gt 0) {
+        Write-Host "Certification has failed!"
+        exit 1
+    } else {
+        Write-Host "Certification has succeed!"
+    }
 
-    Write-Output "conclusion=failure" >> $env:GITHUB_OUTPUT 
+} else {
 
     Write-Host "::warning::Unable to find a valid WACK execution report to analyze!"
 
