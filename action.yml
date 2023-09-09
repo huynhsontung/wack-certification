@@ -64,6 +64,7 @@ runs:
         -packageFullName "${{ inputs.package-full-name }}"
         -reportName "${{ inputs.report-name }}"
         -appType "${{ inputs.app-type }}"
+        -testIds ${{ inputs.rules || '@()' }}
         -Verbose
 
     - name: Analyze the Windows App Certification Kit results
