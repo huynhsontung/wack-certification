@@ -6,7 +6,10 @@ inputs:
     required: true
   package-path:
     description: "Relative path of the target package to test with the WACK (appxbundle or msixbundle file)"
-    required: true
+    required: false
+  package-full-name:
+    description: "Full name of installed package"
+    required: false
   report-name:
     description: "Desired name of the certification report"
     required: true
@@ -57,8 +60,9 @@ runs:
       shell: powershell
       run: >
         ${{ github.action_path }}\scripts\Run-WACK.ps1
-        "${{ inputs.package-path }}"
-        "${{ inputs.report-name }}"
+        -packagePath "${{ inputs.package-path }}"
+        -packageFullName "${{ inputs.package-full-name }}"
+        -reportName "${{ inputs.report-name }}"
         -appType "${{ inputs.app-type }}"
         -testIds ${{ inputs.rules || '@()' }}
         -Verbose

@@ -1,20 +1,27 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory=$true, Position=0)]
-    [string]$packagePath,
-
-    [Parameter(Mandatory=$true, Position=1)]
+    [Parameter(Mandatory = $true)]
     [string]$reportName,
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
+    [string]$packagePath,
+
+    [Parameter(Mandatory = $false)]
+    [string]$packageFullName,
+
+    [Parameter(Mandatory = $false)]
     [string]$appType = "windowsstoreapp",
 
-    [Parameter(Mandatory=$false)]
+    [Parameter(Mandatory = $false)]
     [int[]]$testIds
 )
 
 # Ensure the error action preference is set to the default for PowerShell3, 'Stop'
 $ErrorActionPreference = 'Stop'
+
+if (!$packagePath -and !$packageFullName) {
+    throw "At least one of packagePath or packageFullName must be specified"
+}
 
 $appcertpath = "${env:ProgramFiles(x86)}\Windows Kits\10\App Certification Kit\appcert.exe"
 Write-Verbose "appcertpath = $appcertpath"
@@ -32,8 +39,13 @@ Write-Verbose "packagepath = $packagePath"
 $reportoutpath = "$reportoutputdirectory\$reportName"
 Write-Output "reportPath=$reportoutpath" >> $env:GITHUB_OUTPUT
 
-# $arguments = "-appusage peruser -appxpackagepath `"$packagePath`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
-$arguments = "-appusage peruser -packagefullname `"Screenbox_1.0.0.0_x64__rm8wvch11q4my`" -reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
+$arguments = "-reportoutputpath `"$reportoutpath`" -apptype `"$appType`""
+if ($packagePath) {
+    $arguments += " -appxpackagepath `"$packagePath`""
+} else {
+    $arguments += " -packagefullname `"$packageFullName`""
+}
+
 if ($testIds.Count -gt 0) {
     $arguments += " -testid [$($testIds -join ',')]"
 }
