@@ -35,26 +35,6 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - name: "Create a check run"
-      id: check-run
-      uses: actions/github-script@v7
-      env:
-        sha_workflow: ${{ github.event.workflow_run.head_commit.id }}
-        sha_pr: ${{ github.event.pull_request.head.sha }}
-      with:
-        script: |
-          const check = await github.rest.checks.create({
-            head_sha: (process.env.sha_workflow || process.env.sha_pr || context.sha),
-            name: "${{ inputs.name }}",
-            status: "in_progress",
-            output: {
-              title: "",
-              summary: ""
-            },
-            ...context.repo
-          });
-          return { id: check.data.id }
-
     - name: Run the Windows App Certification Kit
       id: certification
       shell: powershell
@@ -69,7 +49,6 @@ runs:
 
     - name: Analyze the Windows App Certification Kit results
       id: analysis
-      continue-on-error: true
       shell: powershell
       run: >
         ${{ github.action_path }}\scripts\Analyze-Results.ps1
@@ -77,31 +56,6 @@ runs:
         "${{ inputs.ignore-rules }}"
         "${{ inputs.threat-as-warning-rules }}"
 
-    - name: "Update the check run conclusion"
-      uses: actions/github-script@v7
-      if: steps.analysis.conclusion != 'skipped'
-      env:
-        summary_file: '${{ steps.analysis.outputs.summaryPath }}'
-      with:
-        script: |
-          const summary = require("fs").readFileSync(process.env.summary_file, "utf-8");
-          const resp = await github.rest.checks.update({
-            check_run_id: ${{ fromJSON(steps.check-run.outputs.result).id }},
-            status: "completed",
-            conclusion: "${{ steps.analysis.conclusion }}",
-            output: {
-              title: "${{ steps.analysis.outputs.title }}",
-              summary: summary
-            },
-            ...context.repo
-          });
-          console.log(`Check run create response: ${resp.status}`)
-          console.log(`Check run URL: ${resp.data.url}`)
-          console.log(`Check run HTML: ${resp.data.html_url}`)
-    
-    - if: steps.analysis.outcome == 'failure'
-      shell: powershell
-      run: exit 1
 
 branding:
   icon: check-circle
